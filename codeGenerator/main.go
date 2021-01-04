@@ -7,8 +7,12 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/smtp"
+	"strconv"
 	"strings"
+
+	mail "github.com/xhit/go-simple-mail"
 )
 
 // 1. 邮箱列表文件
@@ -30,7 +34,9 @@ func main() {
 	emails := readEmails()
 	senderEmailConfig := readSenderEmailConfig()
 	verifyInfos := genVerifyCodes(emails)
-	sendEmails(senderEmailConfig, verifyInfos)
+	// sendEmails(senderEmailConfig, verifyInfos)
+	sendEmails2(senderEmailConfig, verifyInfos)
+
 }
 
 func readEmails() []string {
@@ -115,6 +121,62 @@ func sendEmails(senderConfig map[string]string, infos []VerifyInfo) {
 			return
 		}
 		Logf("Send %v done!\n", v.email)
+	}
+	Log("===Send all done!==============\n\n")
+}
+
+func sendEmails2(senderConfig map[string]string, infos []VerifyInfo) {
+	server := mail.NewSMTPClient()
+
+	from := senderConfig["from"]
+	password := senderConfig["password"]
+	smtpHost := senderConfig["smtpHost"]
+	smtpPort := senderConfig["smtpPort"]
+
+	// SMTP Server
+	server.Host = smtpHost
+	server.Port, _ = strconv.Atoi(smtpPort)
+	server.Username = from
+	server.Password = password
+
+	server.Encryption = mail.EncryptionTLS
+	//Set your smtpClient struct to keep alive connection
+	server.KeepAlive = true
+	// SMTP client
+	smtpClient, err := server.Connect()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t, _ := template.ParseFiles(webTemplatePath)
+
+	for _, v := range infos {
+		var body bytes.Buffer
+		// body.Write([]byte(fmt.Sprintf("Subject: Conflux Annual Meeting Vrify Code\n%s\n\n", mimeHeaders)))
+
+		t.Execute(&body, struct {
+			Code string
+		}{
+			Code: string(v.code),
+		})
+
+		// New email simple html with inline and CC
+		email := mail.NewMSG()
+		email.SetFrom(fmt.Sprintf("%v<%v>", server.Username, server.Username)).
+			AddTo(v.email).
+			SetSubject("Conflux Annual Meeting Vrify Code")
+
+		email.SetBody(mail.TextHTML, body.String())
+		// email.AddInline("/path/to/image.png", "Gopher.png")
+
+		// Call Send and pass the client
+		err = email.Send(smtpClient)
+		if err != nil {
+			log.Fatalln(err)
+		} else {
+			Logf("Send %v done!\n", v.email)
+		}
+
 	}
 	Log("===Send all done!==============\n\n")
 }
