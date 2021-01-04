@@ -174,12 +174,16 @@ contract LuckyDraw is LuckyDrawStorage {
         }
     }
 
-    function reset() public payable onlyAdmin {
+    function reset(bool drawPlans) public payable onlyAdmin {
         nextDrawStep = 0;
         winnerCount = 0;
         for (uint8 i = 0; i < playerCodeHashes.length; i++) {
             Player storage p = players[playerCodeHashes[i]];
             p.hasWinned = false;
+        }
+
+        if(drawPlans){
+            delete drawPlans;
         }
         revertIfOutOfBalance();
     }
