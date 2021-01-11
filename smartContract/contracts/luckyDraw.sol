@@ -188,13 +188,13 @@ contract LuckyDraw is LuckyDrawStorage {
         revertIfOutOfBalance();
     }
 
-    function revertIfOutOfBalance() private {
+    function revertIfOutOfBalance() private view {
         uint256 needCfx;
         for (uint256 i = 0; i < drawPlans.length; i++) {
             needCfx += uint256(drawPlans[i].luckyNum).mul(drawPlans[i].bonus);
         }
         require(
-            needCfx <= address(this).balance.add(msg.value),
+            needCfx <= address(this).balance,
             "not enough balance for bonus"
         );
     }
@@ -211,5 +211,9 @@ contract LuckyDraw is LuckyDrawStorage {
                     )
                 )
             );
+    }
+
+    function getDrawPlanNum() public view returns(uint256) {
+        return drawPlans.length;
     }
 }

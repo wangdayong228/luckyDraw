@@ -1,348 +1,357 @@
 [
-    {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint8",
-              "name": "level",
-              "type": "uint8"
-            },
-            {
-              "internalType": "uint8",
-              "name": "roundIndex",
-              "type": "uint8"
-            },
-            {
-              "internalType": "uint8",
-              "name": "luckyNum",
-              "type": "uint8"
-            },
-            {
-              "internalType": "uint256",
-              "name": "bonus",
-              "type": "uint256"
-            },
-            {
-              "internalType": "bytes32[]",
-              "name": "luckyGuys",
-              "type": "bytes32[]"
-            }
-          ],
-          "indexed": false,
-          "internalType": "struct LuckyDrawStorage.DrawInfo",
-          "name": "drawInfo",
-          "type": "tuple"
-        }
-      ],
-      "name": "DrawedOneRound",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "bytes32",
-          "name": "codeHash",
-          "type": "bytes32"
-        },
-        {
-          "components": [
-            {
-              "internalType": "address payable",
-              "name": "account",
-              "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "wishes",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "blessing",
-              "type": "string"
-            },
-            {
-              "internalType": "bool",
-              "name": "hasWinned",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "isWhiteList",
-              "type": "bool"
-            }
-          ],
-          "indexed": false,
-          "internalType": "struct LuckyDrawStorage.Player",
-          "name": "player",
-          "type": "tuple"
-        }
-      ],
-      "name": "Registered",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "drawPlans",
-      "outputs": [
-        {
-          "internalType": "uint8",
-          "name": "level",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint8",
-          "name": "roundIndex",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint8",
-          "name": "luckyNum",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint256",
-          "name": "bonus",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "drawers",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "playerCodeHashes",
-      "outputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
-      "name": "players",
-      "outputs": [
-        {
-          "internalType": "address payable",
-          "name": "account",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "wishes",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "blessing",
-          "type": "string"
-        },
-        {
-          "internalType": "bool",
-          "name": "hasWinned",
-          "type": "bool"
-        },
-        {
-          "internalType": "bool",
-          "name": "isWhiteList",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "registeredCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "winnerCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "stateMutability": "payable",
-      "type": "receive",
-      "payable": true
-    },
-    {
-      "inputs": [],
-      "name": "getAdmin",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32[]",
-          "name": "codeHashes",
-          "type": "bytes32[]"
-        }
-      ],
-      "name": "initalWhiteList",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint8",
-          "name": "level",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint8",
-          "name": "roundIndex",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint8",
-          "name": "luckyNum",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint256",
-          "name": "bonus",
-          "type": "uint256"
-        }
-      ],
-      "name": "addDrawPlan",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function",
-      "payable": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address[]",
-          "name": "newDrawers",
-          "type": "address[]"
-        }
-      ],
-      "name": "updateDrawers",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "code",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "wishes",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "blessing",
-          "type": "string"
-        }
-      ],
-      "name": "register",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "draw",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "reset",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function",
-      "payable": true
-    }
-  ]
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint8",
+            "name": "level",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "roundIndex",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "luckyNum",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "bonus",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32[]",
+            "name": "luckyGuys",
+            "type": "bytes32[]"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct LuckyDrawStorage.DrawInfo",
+        "name": "drawInfo",
+        "type": "tuple"
+      }
+    ],
+    "name": "DrawedOneRound",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "codeHash",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address payable",
+            "name": "account",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "wishes",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "blessing",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "hasWinned",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isWhiteList",
+            "type": "bool"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct LuckyDrawStorage.Player",
+        "name": "player",
+        "type": "tuple"
+      }
+    ],
+    "name": "Registered",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "drawPlans",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "level",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "roundIndex",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "luckyNum",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bonus",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "drawers",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "playerCodeHashes",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "players",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "wishes",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "blessing",
+        "type": "string"
+      },
+      {
+        "internalType": "bool",
+        "name": "hasWinned",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isWhiteList",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "registeredCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "winnerCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  },
+  {
+    "inputs": [],
+    "name": "getAdmin",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "codeHashes",
+        "type": "bytes32[]"
+      }
+    ],
+    "name": "initalWhiteList",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "level",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "roundIndex",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "luckyNum",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bonus",
+        "type": "uint256"
+      }
+    ],
+    "name": "addDrawPlan",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "newDrawers",
+        "type": "address[]"
+      }
+    ],
+    "name": "updateDrawers",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "code",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "wishes",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "blessing",
+        "type": "string"
+      }
+    ],
+    "name": "register",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "draw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "drawPlans",
+        "type": "bool"
+      }
+    ],
+    "name": "reset",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getDrawPlanNum",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
