@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"runtime"
 
 	"golang.org/x/crypto/sha3"
 )
@@ -19,11 +18,12 @@ var (
 )
 
 func init() {
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		panic("get current file path error")
-	}
-	currentDir = path.Join(filename, "../")
+	// _, filename, _, ok := runtime.Caller(0)
+	// if !ok {
+	// 	panic("get current file path error")
+	// }
+	// currentDir = path.Join(filename, "../")
+	currentDir = "./"
 	logPath = path.Join(currentDir, "log.txt")
 	recieverEmailsPath = path.Join(currentDir, "1_填写员工邮箱.csv")
 	fromEmailConfigPath = path.Join(currentDir, "2_填写你的邮箱配置.json")

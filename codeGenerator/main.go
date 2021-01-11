@@ -35,6 +35,7 @@ func main() {
 	senderEmailConfig := readSenderEmailConfig()
 	verifyInfos := genVerifyCodes(emails)
 	// sendEmails(senderEmailConfig, verifyInfos)
+	// return
 	sendEmails2(senderEmailConfig, verifyInfos)
 
 }
@@ -42,7 +43,8 @@ func main() {
 func readEmails() []string {
 	content, err := ioutil.ReadFile(recieverEmailsPath)
 	OsExitIfErr(err, "failed to read emails file")
-	emails := strings.Split(string(content), "\n")
+	str := strings.ReplaceAll(string(content), "\r", "")
+	emails := strings.Split(str, "\n")
 	Logf("====Read emails================\nLength:%v\n", len(emails))
 	return emails
 }
@@ -67,12 +69,12 @@ func genVerifyCodes(emails []string) []VerifyInfo {
 		}
 		verifyInfos[i] = info
 	}
-	Log("===Create codes and hashes=====\nEmail\tHash\n")
+	Log("===Create codes and hashes=====\nEmail    Hash\n")
 	for _, v := range verifyInfos {
 		// fmt.Printf("%s\t%s\t0x%x\n", v.email, v.code, v.hash)
 		// fmt.Printf("%s\t0x%x\n", v.email, v.hash)
 		// Log(fmt.Sprintf("%s\t0x%x\n", v.email, v.hash))
-		Logf(fmt.Sprintf("%s\t0x%x\n", v.email, v.hash))
+		Logf(fmt.Sprintf("%s    0x%x\n", v.email, v.hash))
 	}
 	Log("===Send emials=================\n")
 	return verifyInfos
@@ -132,6 +134,7 @@ func sendEmails2(senderConfig map[string]string, infos []VerifyInfo) {
 	password := senderConfig["password"]
 	smtpHost := senderConfig["smtpHost"]
 	smtpPort := senderConfig["smtpPort"]
+	nickName := senderConfig["nickName"]
 
 	// SMTP Server
 	server.Host = smtpHost
@@ -162,7 +165,7 @@ func sendEmails2(senderConfig map[string]string, infos []VerifyInfo) {
 
 		// New email simple html with inline and CC
 		email := mail.NewMSG()
-		email.SetFrom(fmt.Sprintf("%v<%v>", server.Username, server.Username)).
+		email.SetFrom(fmt.Sprintf("%v<%v>", nickName, server.Username)).
 			AddTo(v.email).
 			SetSubject("Conflux Annual Meeting Vrify Code")
 
@@ -176,7 +179,6 @@ func sendEmails2(senderConfig map[string]string, infos []VerifyInfo) {
 		} else {
 			Logf("Send %v done!\n", v.email)
 		}
-
 	}
 	Log("===Send all done!==============\n\n")
 }
