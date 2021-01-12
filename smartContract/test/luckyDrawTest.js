@@ -72,7 +72,7 @@ contract("LuckyDraw", async accounts => {
     // console.log("accounts:", accounts)
 
     beforeEach(async () => {
-        // console.log("run LuckyDraw before hook")
+        console.log("run LuckyDraw before hook")
         this.accounts = accounts
         const luckyDraw = await LuckyDraw.new()
         this.luckyDraw = luckyDraw
@@ -126,6 +126,17 @@ contract("LuckyDraw", async accounts => {
             const badCode = "xxxxxxxx"
             expectRevert(this.luckyDraw.register(badCode, "再增胖10斤", "conflux涨100倍", { from: accounts[3] }),
                 "invalid verify code hash")
+        })
+
+        it("check registerd", async () => {
+            let isRegisterd = await this.luckyDraw.checkIsRegisterd(accounts[1])
+            expect(isRegisterd).to.equal(false)
+
+            const goodCode = this.verifyInfos[0].code
+            await this.luckyDraw.register(goodCode, "增胖10斤", "conflux涨10倍", { from: accounts[1] })
+
+            isRegisterd = await this.luckyDraw.checkIsRegisterd(accounts[1])
+            expect(isRegisterd).to.equal(true)
         })
     })
 
@@ -231,16 +242,17 @@ contract("LuckyDraw", async accounts => {
 
     describe("add draw plan", async () => {
         it("need enough balance when add plan", async () => {
-            expectRevert(this.luckyDraw.addDrawPlan(3, 0, 20, 88,{value: 100}),"not enough balance for bonus")
+            expectRevert(this.luckyDraw.addDrawPlan(3, 0, 20, 88, { value: 100 }), "not enough balance for bonus")
         })
     })
 
-    describe("get draw step number",async()=>{
-        it("should ok",async()=>{
+    describe("get draw step number", async () => {
+        it("should ok", async () => {
             await addDrawPlan.call(this, 3, 0, 20, 88)
             await addDrawPlan.call(this, 3, 1, 10, 888)
             num = await this.luckyDraw.getDrawPlanNum()
             expect(num).to.bignumber.equal(new BN(2))
         })
     })
+
 })

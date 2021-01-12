@@ -1,39 +1,17 @@
 // var contract = require("@truffle/contract");
 var content = require("./build/contracts/LuckyDraw.json");
-var web3js = require("web3");
-var LuckyDraw = contract(content);
+// var web3js = require("web3");
+// var LuckyDraw = contract(content);
 const sdk = require("js-conflux-sdk");
-const { luckyDraw } = require("./test/luckyDrawTest");
-
 
 const cfx = new sdk.Conflux({
     url: "http://test.confluxrpc.org",
     logger: console
 })
+
+const iluckyDraw = cfx.Contract({ abi: content.abi, address: content.networks[10001].address })
 cfx.wallet.addPrivateKey("0x0B8E5E4FD172B3FFADE2DA8CC3132C150D2500A53424C809F22106933B8A6E6D")
-
-// module.exports = async function (callback) {
-//     // perform actions
-//     // console.log(LuckyDraw)
-//     try {
-//         luckyDraw = await LuckyDraw.deployed();
-
-//         // inintal white list
-//         let whiteList = [];
-//         await luckyDraw.initalWhiteList(whiteList, { from: "0x1a6048c1D81190c9A3555D0a06d0699663c4dDF0" })
-//         console.log("init white list done")
-//         // add plan 
-//         await luckyDraw.addDrawPlan(3, 1, 3, 1e18, { value: 3 * 1e18 })
-//         await luckyDraw.addDrawPlan(3, 2, 2, 1e18, { value: 2 * 1e18 })
-//         await luckyDraw.addDrawPlan(2, 1, 2, 2e18, { value: 2 * 2e18 })
-//         await luckyDraw.addDrawPlan(1, 1, 1, 3e18, { value: 1 * 3e18 })
-//         console.log("add draw plan done")
-//         callback()
-//     } catch (err) {
-//         callback(err)
-//     }
-// }
-
+const sender = "0x1a6048c1D81190c9A3555D0a06d0699663c4dDF0"
 const whiteList = ["0xe388b6d301c6006f82a47e1aced9dc1da9496c5e2f01730db94334af9d42d155",
     "0x29f15172344342ea9810eb5df1694059173a3dae4cc5da62a752b123fb4f7f6a",
     "0xc95eb74e2d7483dfe5ac77ab836dbb6bd75020d34583ae0d7d2bbfa50d775e05",
@@ -45,18 +23,19 @@ const whiteList = ["0xe388b6d301c6006f82a47e1aced9dc1da9496c5e2f01730db94334af9d
     "0xad4803b5c6e8b9e5eca6458f35e957b5113b49d6a856b934f284e7f9aac28350",
     "0xabb2005f087fe261093f687796ffb69ff1e886d5ef455abc991560443a889b67",
     "0x257db0004b21d16f09a6022df255723f6f481ca0ba8099aaa21d461b51aaf640"]
+const drawers = ["0x11903959415d173471371a2EF111B5812cd22ceF"]
 
-async function run(){
-    // runUseJssdk().catch(console.trace)
-    getDrawPlanNum()
+async function run() {
+    await runUseJssdk().catch(console.trace)
+    await setDrawer()
 }
 
 async function runUseJssdk() {
-    luckyDraw = cfx.Contract({ abi: content.abi, address: content.networks[10001].address })
-    console.log(luckyDraw.address)
+
+    console.log(iluckyDraw.address)
     // return
 
-    let admin = await luckyDraw.getAdmin()
+    let admin = await iluckyDraw.getAdmin()
     console.log("admin:", admin)
     // return
 
@@ -64,21 +43,25 @@ async function runUseJssdk() {
     console.log("white list:", whiteList)
     // return
 
-    let sender = "0x1a6048c1D81190c9A3555D0a06d0699663c4dDF0"
-    await luckyDraw.initalWhiteList(bWhiteList).sendTransaction({ from: sender }).executed()
+    await iluckyDraw.initalWhiteList(bWhiteList).sendTransaction({ from: sender }).executed()
     console.log("init white list done")
     // return
+
     // add plan 
-    await luckyDraw.addDrawPlan(3, 1, 3, 1e18,).sendTransaction({ from: sender, value: 3 * 1e18 }).executed()
-    await luckyDraw.addDrawPlan(3, 2, 2, 1e18,).sendTransaction({ from: sender, value: 2 * 1e18 }).executed()
-    await luckyDraw.addDrawPlan(2, 1, 2, 2e18,).sendTransaction({ from: sender, value: 2 * 2e18 }).executed()
-    await luckyDraw.addDrawPlan(1, 1, 1, 3e18,).sendTransaction({ from: sender, value: 1 * 3e18 }).executed()
+    await iluckyDraw.addDrawPlan(3, 1, 3, 1e18,).sendTransaction({ from: sender, value: 3 * 1e18 }).executed()
+    await iluckyDraw.addDrawPlan(3, 2, 2, 1e18,).sendTransaction({ from: sender, value: 2 * 1e18 }).executed()
+    await iluckyDraw.addDrawPlan(2, 1, 2, 2e18,).sendTransaction({ from: sender, value: 2 * 2e18 }).executed()
+    await iluckyDraw.addDrawPlan(1, 1, 1, 3e18,).sendTransaction({ from: sender, value: 1 * 3e18 }).executed()
     console.log("add draw plan done")
+
+    console.log("draw plan num:", await iluckyDraw.getDrawPlanNum())
+    console.log("check is registerd:", await iluckyDraw.checkIsRegisterd(sender))
+    console.log("get player:", await iluckyDraw.getPlayerByAddress(sender))
 }
 
-async function getDrawPlanNum(){
-    luckyDraw = cfx.Contract({ abi: content.abi, address: content.networks[10001].address })
-    console.log(luckyDraw.address)
-    console.log(await luckyDraw.getDrawPlanNum())
+async function setDrawer() {
+    const receipt = await iluckyDraw.updateDrawers(drawers).sendTransaction({ from: sender }).executed()
+    console.log("set drawer done:", receipt.outcomeStatus)
 }
 
+run()

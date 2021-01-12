@@ -182,7 +182,7 @@ contract LuckyDraw is LuckyDrawStorage {
             p.hasWinned = false;
         }
 
-        if(drawPlans){
+        if (drawPlans) {
             delete drawPlans;
         }
         revertIfOutOfBalance();
@@ -213,7 +213,21 @@ contract LuckyDraw is LuckyDrawStorage {
             );
     }
 
-    function getDrawPlanNum() public view returns(uint256) {
+    function getDrawPlanNum() public view returns (uint256) {
         return drawPlans.length;
+    }
+
+    function checkIsRegisterd(address account) public view returns (bool) {
+        Player memory p = getPlayerByAddress(account);
+        return p.account == account;
+    }
+
+    function getPlayerByAddress(address account) public view returns (Player memory) {
+        for (uint256 i = 0; i < playerCodeHashes.length; i++) {
+            Player memory p = players[playerCodeHashes[i]];
+            if (p.account == account) {
+                return p;
+            }
+        }
     }
 }
