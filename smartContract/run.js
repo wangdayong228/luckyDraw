@@ -1,8 +1,9 @@
-var contract = require("@truffle/contract");
+// var contract = require("@truffle/contract");
 var content = require("./build/contracts/LuckyDraw.json");
 var web3js = require("web3");
 var LuckyDraw = contract(content);
 const sdk = require("js-conflux-sdk");
+const { luckyDraw } = require("./test/luckyDrawTest");
 
 
 const cfx = new sdk.Conflux({
@@ -45,6 +46,11 @@ const whiteList = ["0xe388b6d301c6006f82a47e1aced9dc1da9496c5e2f01730db94334af9d
     "0xabb2005f087fe261093f687796ffb69ff1e886d5ef455abc991560443a889b67",
     "0x257db0004b21d16f09a6022df255723f6f481ca0ba8099aaa21d461b51aaf640"]
 
+async function run(){
+    // runUseJssdk().catch(console.trace)
+    getDrawPlanNum()
+}
+
 async function runUseJssdk() {
     luckyDraw = cfx.Contract({ abi: content.abi, address: content.networks[10001].address })
     console.log(luckyDraw.address)
@@ -70,4 +76,9 @@ async function runUseJssdk() {
     console.log("add draw plan done")
 }
 
-runUseJssdk().catch(console.trace)
+async function getDrawPlanNum(){
+    luckyDraw = cfx.Contract({ abi: content.abi, address: content.networks[10001].address })
+    console.log(luckyDraw.address)
+    console.log(await luckyDraw.getDrawPlanNum())
+}
+

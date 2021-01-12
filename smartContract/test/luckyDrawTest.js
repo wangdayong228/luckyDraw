@@ -234,4 +234,13 @@ contract("LuckyDraw", async accounts => {
             expectRevert(this.luckyDraw.addDrawPlan(3, 0, 20, 88,{value: 100}),"not enough balance for bonus")
         })
     })
+
+    describe("get draw step number",async()=>{
+        it("should ok",async()=>{
+            await addDrawPlan.call(this, 3, 0, 20, 88)
+            await addDrawPlan.call(this, 3, 1, 10, 888)
+            num = await this.luckyDraw.getDrawPlanNum()
+            expect(num).to.bignumber.equal(new BN(2))
+        })
+    })
 })
