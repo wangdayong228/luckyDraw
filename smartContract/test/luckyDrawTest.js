@@ -6,41 +6,7 @@ const keccak = require('keccak');
 const { expect } = require('chai');
 const { expectRevert, expectEvent, constants, balance, BN, time } = require("@openzeppelin/test-helpers");
 const { web3 } = require('@openzeppelin/test-helpers/src/setup');
-
-
-// =======gen verify codes
-
-const charOpts = "abcdefghijklmnopqrstuvwxyaABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-
-function keccak256(buffer) {
-    return keccak('keccak256').update(buffer).digest();
-}
-
-function randomBuffer(size) {
-    return crypto.randomBytes(size);
-}
-
-function genVerifyInfo() {
-    let len = randomBuffer(1)[0] % 8 + 8
-    let randBytes = randomBuffer(len)
-    for (let i = 0; i < randBytes.length; i++) {
-        randBytes[i] = charOpts.charCodeAt(randBytes[i] % charOpts.length)
-    }
-    return {
-        code: Buffer.from(randBytes).toString(),
-        hash: "0x" + keccak256(randBytes).toString('hex'),
-    }
-}
-
-function genBatchVerifyInfo(n) {
-    let infos = []
-    for (let i = 0; i < n; i++) {
-        let info = genVerifyInfo()
-        infos.push(info)
-    }
-    return infos
-}
-// ============================
+const { genBatchVerifyInfo } = require('../lib/codeGen');
 
 async function registerMulti(n) {
     n = n + 5
@@ -72,7 +38,7 @@ contract("LuckyDraw", async accounts => {
     // console.log("accounts:", accounts)
 
     beforeEach(async () => {
-        console.log("run LuckyDraw before hook")
+        // console.log("run LuckyDraw before hook")
         this.accounts = accounts
         const luckyDraw = await LuckyDraw.new()
         this.luckyDraw = luckyDraw
@@ -237,6 +203,26 @@ contract("LuckyDraw", async accounts => {
             // draw
             await this.luckyDraw.draw({ from: this.accounts[1] })
             expectRevert(this.luckyDraw.draw({ from: this.accounts[1] }), "remain players not enough")
+        })
+
+        it("getWinners", async () => {
+            let plans = []
+            //addDrawPlans
+            plans.push(await addDrawPlan.call(this, 3, 0, 5, 88))
+            plans.push(await addDrawPlan.call(this, 3, 1, 3, 888))
+            plans.push(await addDrawPlan.call(this, 3, 1, 2, 888))
+            plans.push(await addDrawPlan.call(this, 3, 1, 1, 888))
+            // register
+            await registerMulti.call(this, 20 + 5)
+            // draw
+            await this.luckyDraw.draw({ from: this.accounts[1] })
+            await this.luckyDraw.draw({ from: this.accounts[1] })
+            await this.luckyDraw.draw({ from: this.accounts[1] })
+            await this.luckyDraw.draw({ from: this.accounts[1] })
+            // check
+            let winners = await this.luckyDraw.getWinners()
+            // console.log("winners:", winners)
+            expect(winners.length).to.equal(11)
         })
     })
 

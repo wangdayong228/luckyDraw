@@ -37,7 +37,7 @@ contract LuckyDrawStorage {
     uint256 public registeredCount;
 
     // start from 0 to drawPlans.length-1
-    uint8 nextDrawStep;
+    uint8 public nextDrawStep;
 
     AdminControl adminControl =
         AdminControl(0x0888000000000000000000000000000000000000);
@@ -174,17 +174,32 @@ contract LuckyDraw is LuckyDrawStorage {
         }
     }
 
-    function reset(bool drawPlans) public payable onlyAdmin {
+    function reset(bool resetRegisterd, bool resetDrawPlans)
+        public
+        payable
+        onlyAdmin
+    {
         nextDrawStep = 0;
         winnerCount = 0;
-        for (uint8 i = 0; i < playerCodeHashes.length; i++) {
+
+        for (uint256 i = 0; i < playerCodeHashes.length; i++) {
             Player storage p = players[playerCodeHashes[i]];
             p.hasWinned = false;
+            if (resetRegisterd) {
+                p.account = address(0);
+                delete p.blessing;
+                delete p.wishes;
+            }
         }
 
-        if (drawPlans) {
+        if (resetDrawPlans) {
             delete drawPlans;
+        } else {
+            for (uint256 i = 0; i < drawPlans.length; i++) {
+                delete drawPlans[i].luckyGuys;
+            }
         }
+
         revertIfOutOfBalance();
     }
 
@@ -217,17 +232,37 @@ contract LuckyDraw is LuckyDrawStorage {
         return drawPlans.length;
     }
 
+    function getWhiteListNum() public view returns (uint256) {
+        return playerCodeHashes.length;
+    }
+
     function checkIsRegisterd(address account) public view returns (bool) {
         Player memory p = getPlayerByAddress(account);
         return p.account == account;
     }
 
-    function getPlayerByAddress(address account) public view returns (Player memory) {
+    function getPlayerByAddress(address account)
+        public
+        view
+        returns (Player memory)
+    {
         for (uint256 i = 0; i < playerCodeHashes.length; i++) {
             Player memory p = players[playerCodeHashes[i]];
             if (p.account == account) {
                 return p;
             }
         }
+    }
+
+    function getWinners() public view returns (bytes32[] memory) {
+        bytes32[] memory winners = new bytes32[](winnerCount);
+        uint256 wIndex = 0;
+        for (uint256 i = 0; i < playerCodeHashes.length; i++) {
+            Player memory p = players[playerCodeHashes[i]];
+            if (p.hasWinned) {
+                winners[wIndex++] = playerCodeHashes[i];
+            }
+        }
+        return winners;
     }
 }

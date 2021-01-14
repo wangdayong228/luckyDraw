@@ -48,7 +48,7 @@ module.exports = {
      network_id: "*",       // Any network (default: none)
     },
     conflux:{
-     host: "test.confluxrpc.org",     // Localhost (default: none)
+     host: "testnet-rpc.conflux-chain.org.cn",     // Localhost (default: none)
      port: 80,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
      privateKeys:["0x0B8E5E4FD172B3FFADE2DA8CC3132C150D2500A53424C809F22106933B8A6E6D"] 
