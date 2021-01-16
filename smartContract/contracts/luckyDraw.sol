@@ -192,6 +192,10 @@ contract LuckyDraw is LuckyDrawStorage {
             }
         }
 
+        if (resetRegisterd) {
+            registeredCount = 0;
+        }
+
         if (resetDrawPlans) {
             delete drawPlans;
         } else {
@@ -264,5 +268,17 @@ contract LuckyDraw is LuckyDrawStorage {
             }
         }
         return winners;
+    }
+
+    function getRegisters() public view returns(bytes32[] memory){
+        bytes32[] memory registers = new bytes32[](registeredCount);
+        uint256 rIndex = 0;
+        for (uint256 i = 0; i < playerCodeHashes.length; i++) {
+            Player memory p = players[playerCodeHashes[i]];
+            if (p.account!=address(0)) {
+                registers[rIndex++] = playerCodeHashes[i];
+            }
+        }
+        return registers;
     }
 }

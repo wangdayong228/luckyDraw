@@ -59,10 +59,10 @@ async function initialContract() {
     // return
 
     // add plan 
-    await iluckyDraw.addDrawPlan(3, 1, 3, 1e18,).sendTransaction({ from: sender, value: 3 * 1e18 }).executed()
-    await iluckyDraw.addDrawPlan(3, 2, 2, 1e18,).sendTransaction({ from: sender, value: 2 * 1e18 }).executed()
-    await iluckyDraw.addDrawPlan(2, 1, 2, 2e18,).sendTransaction({ from: sender, value: 2 * 2e18 }).executed()
-    await iluckyDraw.addDrawPlan(1, 1, 1, 3e18,).sendTransaction({ from: sender, value: 1 * 3e18 }).executed()
+    await iluckyDraw.addDrawPlan(3, 1, 3, 88e18,).sendTransaction({ from: sender, value: 3 * 88e18 }).executed()
+    await iluckyDraw.addDrawPlan(3, 2, 2, 88e18,).sendTransaction({ from: sender, value: 2 * 88e18 }).executed()
+    await iluckyDraw.addDrawPlan(2, 1, 2, 188e18,).sendTransaction({ from: sender, value: 2 * 188e18 }).executed()
+    await iluckyDraw.addDrawPlan(1, 1, 1, 388e18,).sendTransaction({ from: sender, value: 1 * 388e18 }).executed()
     console.log("add draw plan done")
 
     console.log("whitlist num:", await iluckyDraw.getWhiteListNum())
