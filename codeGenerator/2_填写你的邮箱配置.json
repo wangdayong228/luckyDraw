@@ -1,6 +1,6 @@
 {
-    "from": "xxx@qq.com",
-    "password":"password",
-    "smtpHost": "smtp.qq.com",
+    "from": "dayong@conflux-chain.org",
+    "password":"wadozcsdbygytljs",
+    "smtpHost": "smtp.gmail.com",
     "smtpPort": "587"
 }

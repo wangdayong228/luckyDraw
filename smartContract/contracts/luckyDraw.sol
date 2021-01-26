@@ -38,6 +38,8 @@ contract LuckyDrawStorage {
 
     // start from 0 to drawPlans.length-1
     uint8 public nextDrawStep;
+    uint256 public drawStartTime;
+    uint256 public registerStartTime;
 
     AdminControl adminControl =
         AdminControl(0x0888000000000000000000000000000000000000);
@@ -60,6 +62,19 @@ contract LuckyDraw is LuckyDrawStorage {
 
     modifier onlyDrawers() {
         require(drawers[msg.sender] == true, "need drawer permission");
+        _;
+    }
+
+    modifier inDrawTime() {
+        require(block.timestamp > drawStartTime, "it's not time to draw");
+        _;
+    }
+
+    modifier inRegisterTime() {
+        require(
+            block.timestamp > registerStartTime,
+            "it's not time to register"
+        );
         _;
     }
 
@@ -115,7 +130,7 @@ contract LuckyDraw is LuckyDrawStorage {
         string memory code,
         string memory wishes,
         string memory blessing
-    ) public {
+    ) public inRegisterTime {
         bytes32 codeHash = keccak256(bytes(code));
         Player storage p = players[codeHash];
         require(p.isWhiteList == true, "invalid verify code hash");
@@ -128,7 +143,7 @@ contract LuckyDraw is LuckyDrawStorage {
     }
 
     // draw, rand with salt is the random seed of the lucky guy
-    function draw() public onlyDrawers {
+    function draw() public onlyDrawers inDrawTime {
         // 0. check nextDrawStep upper over flow
         require(drawPlans.length > nextDrawStep, "all darw plans has done");
         DrawInfo storage currentDraw = drawPlans[nextDrawStep];
@@ -172,6 +187,14 @@ contract LuckyDraw is LuckyDrawStorage {
             }
             salt = salt + 1234567890;
         }
+    }
+
+    function setDrawStartTime(uint256 startTime) public onlyAdmin {
+        drawStartTime = startTime;
+    }
+
+    function setRegisterStartTime(uint256 startTime) public onlyAdmin {
+        registerStartTime = startTime;
     }
 
     function reset(bool resetRegisterd, bool resetDrawPlans)
@@ -270,12 +293,12 @@ contract LuckyDraw is LuckyDrawStorage {
         return winners;
     }
 
-    function getRegisters() public view returns(bytes32[] memory){
+    function getRegisters() public view returns (bytes32[] memory) {
         bytes32[] memory registers = new bytes32[](registeredCount);
         uint256 rIndex = 0;
         for (uint256 i = 0; i < playerCodeHashes.length; i++) {
             Player memory p = players[playerCodeHashes[i]];
-            if (p.account!=address(0)) {
+            if (p.account != address(0)) {
                 registers[rIndex++] = playerCodeHashes[i];
             }
         }

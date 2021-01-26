@@ -1,12 +1,11 @@
 const Migrations = artifacts.require("Migrations");
 const LuckyDraw = artifacts.require("LuckyDraw");
-const crypto = require('crypto');
-const keccak = require('keccak');
 
 const { expect } = require('chai');
 const { expectRevert, expectEvent, constants, balance, BN, time } = require("@openzeppelin/test-helpers");
 const { web3 } = require('@openzeppelin/test-helpers/src/setup');
 const { genBatchVerifyInfo } = require('../lib/codeGen');
+const sleep = (interval) => new Promise((res, rej) => setTimeout(res, interval));
 
 async function registerMulti(n) {
     n = n + 5
@@ -107,11 +106,6 @@ contract("LuckyDraw", async accounts => {
     })
 
     describe("draw", async () => {
-        // guys should in playerHashes
-        // guys should not wined begin
-        // guys should wined end
-        // guys should received bonus
-        // event should be right
         it("drawer permission", async () => {
             await addDrawPlan.call(this, 3, 0, 20, 88)
             expectRevert(this.luckyDraw.draw({ from: accounts[0] }), "need drawer permission")
@@ -223,6 +217,21 @@ contract("LuckyDraw", async accounts => {
             let winners = await this.luckyDraw.getWinners()
             // console.log("winners:", winners)
             expect(winners.length).to.equal(11)
+        })
+
+        it("only draw enable in drawtime", async () => {
+            await addDrawPlan.call(this, 3, 0, 5, 88)
+            await addDrawPlan.call(this, 3, 0, 5, 88)
+            await registerMulti.call(this, 20 + 5)
+            await this.luckyDraw.draw({ from: this.accounts[1] })
+            // let startDrawTime = Math.round(new Date() / 1000) + 1
+            await this.luckyDraw.setDrawStartTime(startDrawTime)
+            // console.log("draw start time:", (await this.luckyDraw.drawStartTime()).toString())
+            expectRevert(this.luckyDraw.draw({ from: this.accounts[1] }), "it's not time to draw")
+            // console.log("start sleep", new Date()/1000)
+            await sleep(10000)
+            // console.log("end sleep", new Date()/1000)
+            await this.luckyDraw.draw({ from: this.accounts[1] })
         })
     })
 

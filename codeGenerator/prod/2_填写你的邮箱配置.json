@@ -1,0 +1,7 @@
+{
+    "from": "admin@conflux-chain.org",
+    "nickName": "Conflux Admin",
+    "password": "bplnuvudxoheoldn",
+    "smtpHost": "smtp.qq.com",
+    "smtpPort": "587"
+}

@@ -52,7 +52,13 @@ module.exports = {
      port: 80,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
      privateKeys:["0x0B8E5E4FD172B3FFADE2DA8CC3132C150D2500A53424C809F22106933B8A6E6D"] 
-    }
+    },
+    conflux_main:{
+      host: "mainnet.cfxchain.xyz",     // Localhost (default: none)
+      port: 12537,            // Standard Ethereum port (default: none)
+      network_id: "*",       // Any network (default: none)
+      privateKeys:["0x1358270965E64D4717EDDE4096E7DD05B18E64E2423EA73C98979EF5F4BFAF44"] 
+     }
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
@@ -99,5 +105,5 @@ module.exports = {
       // }
     }
   },
-  network: 'conflux'
+  network: 'conflux_main'
 };
